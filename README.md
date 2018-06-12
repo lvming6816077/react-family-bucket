@@ -1,34 +1,77 @@
-# FIE
+# 目录
 
-[![travis status][travis-image]][travis-url]
-[![appveyor build status][appveyor-image]][appveyor-url]
-[![codecov status][codecov-image]][codecov-url]
-[![NPM version][npm-image]][npm-url]
-[![npm download][download-image]][download-url]
+1. [版本说明](#banben)
 
-[travis-image]: https://img.shields.io/travis/fieteam/fie.svg?style=flat-square
-[travis-url]: https://travis-ci.org/fieteam/fie
-[appveyor-image]: https://ci.appveyor.com/api/projects/status/xomn5j270tvv6i98?svg=true&style=flat-square
-[appveyor-url]: https://ci.appveyor.com/project/hugohua/fie
-[codecov-image]: https://img.shields.io/codecov/c/github/fieteam/fie/master.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/fieteam/fie
-[npm-image]: https://img.shields.io/npm/v/fie.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/fie
-[download-image]: https://img.shields.io/npm/dm/fie.svg?style=flat-square
-[download-url]: https://npmjs.org/package/fie
-
-> FIE 是由 国际UED-体验技术部开发 的一款前端工程化工具，提供类似于yeoman的脚手架功能及插件体系。全方位覆盖前端开发过程中各个环节，让你开发更简单，过程更流畅,项目更可持续维护。
-
-
-## Installation
-
-```bash
-$ npm install fie -g --registry=https://registry.npm.taobao.org
+# 版本说明
+由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
+```javascript
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-include-assets-plugin": "^1.0.4",
+    "node-sass": "^4.7.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "sass-loader": "^6.0.7",
+    "sass-resources-loader": "^1.3.3",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "style-loader": "^0.20.3",
+    "url-loader": "^1.0.1",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-react-hot-loader": "^3.0.0-beta.6",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "eslint": "^4.19.1",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-react": "^7.7.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^3.2.0",
+    "react-hot-loader": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "webpack": "^4.3.0",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1",
+    "write-file-webpack-plugin": "^4.2.0"
+  }
 ```
 
-等待片刻，待安装完成之后在终端执行 `$ fie -v`，正常返回版本信息，表示安装成功。
-
-注意：fie依赖 nodejs > 4.x 、 npm 环境，在安装fie时，请确保本机已安装了nodejs和npm
+```
+react-family/
+    |
+   ├──dist/                    * 发布版本构建输出路径
+    |
+   ├──dev/               * 调试版本构建输出路径
+   │
+   │──src/                    * 工具函数
+   │    |
+    |     |—— db.js               * localstorage操作
+    |     |
+    |     |__ index.js            * 别的工具函数
+   │
+   │ 
+   │——constants/                * 一些常量(其实没怎么用)
+   │
+   │
+   │
+   │──.eslint                * 全局的样式，其中也有修改了ant-mobile的样式
+   │____.babelrc                  * babel配置文件
+   │──.eslint                * 全局的样式，其中也有修改了ant-mobile的样式
+   │____.babelrc                  * babel配置文件
+```
 
 ## Docs
 
