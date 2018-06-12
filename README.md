@@ -1,6 +1,10 @@
 # 目录
 
 1. [版本说明](#banben)
+2. [目录结构](#banben)
+3. [初始化项目](#banben)
+4. [webpack](#banben)
+5. [react](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -48,109 +52,108 @@
     "write-file-webpack-plugin": "^4.2.0"
   }
 ```
-
+# 目录结构
+开发和发布版本的配置文件是分开的，多入口页面的目录结构。
 ```
 react-family/
     |
-   ├──dist/                    * 发布版本构建输出路径
+    |──dist/                    * 发布版本构建输出路径
     |
-   ├──dev/               * 调试版本构建输出路径
-   │
-   │──src/                    * 工具函数
-   │    |
-    |     |—— db.js               * localstorage操作
+    |──dev/               * 调试版本构建输出路径
+    |
+    |──src/                    * 工具函数
     |     |
-    |     |__ index.js            * 别的工具函数
-   │
-   │ 
-   │——constants/                * 一些常量(其实没怎么用)
-   │
-   │
-   │
-   │──.eslint                * 全局的样式，其中也有修改了ant-mobile的样式
-   │____.babelrc                  * babel配置文件
-   │──.eslint                * 全局的样式，其中也有修改了ant-mobile的样式
-   │____.babelrc                  * babel配置文件
+    |     |—— component/               * 各页面公用组件
+    |     |
+    |     |—— page/           * 页面代码
+    |     |      |—— index/           * 页面代码
+    |     |      |        |—— Main/           * 组件代码
+    |     |      |        |       |—— Main.jsx          * 组件
+    |     |      |        |       |—— Main.scss          * 组件
+    |     |      |
+    |     |      |—— detail/           * 页面代码
+    |     |
+    |     |—— static/           * 静态文件js，css
+    |
+    |
+    |──webpack.config.build.js                * 发布版本使用的webpack配置文件
+    |____webpack.config.dev.js                  * 调试版本使用的webpack配置文件
+    |──.eslint                     * eslint配置文件
+    |____.babelrc                  * babel配置文件
 ```
 
-## Docs
+# 初始化项目
+1, 创建文件夹
+```bash
+mkdir react-family-bucket
+```
+2, 初始化npm
+```bash
+cd react-family-bucket
+npm init
+```
+如果有特殊需要，可以填入自己的配置，一路回车下来，会生成一个`package.json`，里面是你项目的基本信息，后面的npm依赖安装也会配置在这里。
+# webpack
+1, 安装webpack
+```bash
+npm install webpack --save
+or
+npm install webpack --g
+```
+`--save`是将当前webpack安装到react-family-bucket下的`/node_modules`。
+`--g`是将当前webpack安装到全局下面，可以在node的安装目录下找到全局的`/node_modules`。
 
-* 使用者文档
-	* [FIE介绍](docs/use-summary.md)
-	* [安装FIE](docs/use-install.md)
-	* [FIE基础命令详解](docs/use-cli.md)
-	* [使用FIE套件](docs/use-toolkit.md)
-	* [使用FIE插件](docs/use-plugin.md)
-	* [FIE配置文件](docs/use-config.md)
-* 开发者文档
-	* [FIE API](packages/fie-api/README.md)
-	* [套件开发指南](docs/dev-toolkit.md)
-	* [插件开发指南](docs/dev-plugin.md)
-* 参与FIE开发
-	* [开发环境安装及代码组织](docs/dev-env.md)
-	* [FIE开发规范](docs/dev-rules.md)
-
-## Usage
-
-可在终端输入`$ fie -h` 查看fie使用帮助
+2，配置webopack配置文件
 
 ```bash
-fie 使用帮助:  $ fie [command] [options]
+touch webpack.config.dev.js
+```
+新建一个app.js
+```bash
+touch app.js
+```
+写入基本的webpack配置，可以参考[文档](https://webpack.js.org/)：
+```javascript
+const path = require('path');
+module.exports = {
 
-  $  fie                     # 显示fie帮助信息,若目录下有使用的套件,则会同时显示套件的帮助信息
-  $  fie init [toolkitName]  # 初始化套件
-  $  fie install [name]      # 安装插件
-  $  fie update [name]       # 更新插件
-  $  fie list [type]         # 插件列表
-  $  fie ii                  # 安装npm模块，类似于npm install，但安装速度更快更稳定
-  $  fie clear               # 清空 fie 的本地缓存
-  $  fie switch              # 切换 fie 的开发环境
-  $  fie help                # 显示套件帮助信息
-  $  fie [name]              # 其他调用插件命令
+    // 输入配置
+    entry: [
+      './app.js'
+    ],,
 
- Options:
+    // 输出配置
+    output: {
+        path: path.resolve(__dirname, './dev'),
 
-   -h, --help                显示fie帮助信息
-   -v, --version             显示fie版本
+        filename: 'bundle.min.js'
+    },
+
+};
+```
+3，执行webpack命令
+如果是全局安装：
+```bash
+webpack --config webpack.config.dev.js
+```
+如果是当前目录安装：
+```bash
+./node_modules/.bin/webpack --config webpack.config.dev.js
+```
+执行命令之后，会发现需要安装`webpack-cli`，（webpack4之后需要安装这个）
+```bash
+npm install webpack-cli --save
 ```
 
-### Quick start
-
-以 [fie-toolkit-blue](https://www.npmjs.com/package/fie-toolkit-blue) 套件为例，讲解开发流程。
-
-1. 安装fie到npm全局环境中
-
-	```bash
-	$ npm install fie -g --registry=https://registry.npm.taobao.org
-	```
-
-2. 初始化项目
-
-	```bash
-	# 创建并进入项目文件夹
-	$ mkdir my-project && cd $_
-	
-	# 初始化blue的开发环境
-	$ fie init blue
-	```
-	
-3. 开启本地环境
-
-	```bash
-	# 开启blue的开发环境
-	$ fie start
-	```
-4. 项目编译及打包
-
-	```bash
-	# 打包blue项目的到指定的目录
-	$ fie build
-	```	
-
-## Support
-
-1. 使用过程中遇到的相关问题，可在github上提相关的issues : https://github.com/fieteam/fie/issues/new
-2. 也可通过钉钉或旺旺联系：@宇果
+去除`WARNING in configuration`警告,在webpack.config.dev.js增加一个配置即可：
+```javascript
+...
+mode: 'development'
+...
+```
+执行成功之后会在dev下面生成bundle.min.js正常。
+# react
+1. 安装react
 
 ## License
 
