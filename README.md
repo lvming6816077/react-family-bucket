@@ -57,29 +57,29 @@
 ```
 react-family/
     |
-    |──dist/                    * 发布版本构建输出路径
+    |──dist/                                    * 发布版本构建输出路径
     |
-    |──dev/               * 调试版本构建输出路径
+    |──dev/                                     * 调试版本构建输出路径
     |
-    |──src/                    * 工具函数
+    |──src/                                     * 工具函数
     |     |
-    |     |—— component/               * 各页面公用组件
+    |     |—— component/                        * 各页面公用组件
     |     |
-    |     |—— page/           * 页面代码
-    |     |      |—— index/           * 页面代码
-    |     |      |        |—— Main/           * 组件代码
-    |     |      |        |       |—— Main.jsx          * 组件
-    |     |      |        |       |—— Main.scss          * 组件
+    |     |—— page/                             * 页面代码
+    |     |      |—— index/                     * 页面代码
+    |     |      |        |—— Main/             * 组件代码
+    |     |      |        |       |—— Main.jsx  * 组件jsx
+    |     |      |        |       |—— Main.scss * 组件css
     |     |      |
-    |     |      |—— detail/           * 页面代码
+    |     |      |—— detail/                    * 页面代码
     |     |
-    |     |—— static/           * 静态文件js，css
+    |     |—— static/                           * 静态文件js，css
     |
     |
-    |──webpack.config.build.js                * 发布版本使用的webpack配置文件
-    |____webpack.config.dev.js                  * 调试版本使用的webpack配置文件
-    |──.eslint                     * eslint配置文件
-    |____.babelrc                  * babel配置文件
+    |──webpack.config.build.js                  * 发布版本使用的webpack配置文件
+    |__webpack.config.dev.js                    * 调试版本使用的webpack配置文件
+    |──.eslint                                  * eslint配置文件
+    |__.babelrc                                 * babel配置文件
 ```
 
 # 初始化项目
