@@ -77,7 +77,7 @@ react-family/
     |
     |
     |──webpack.config.build.js                  * 发布版本使用的webpack配置文件
-    |__webpack.config.dev.js                    * 调试版本使用的webpack配置文件
+    |──webpack.config.dev.js                    * 调试版本使用的webpack配置文件
     |──.eslint                                  * eslint配置文件
     |__.babelrc                                 * babel配置文件
 ```
@@ -131,7 +131,7 @@ module.exports = {
 
 };
 ```
-3，执行webpack命令
+3, 执行webpack命令
 如果是全局安装：
 ```bash
 webpack --config webpack.config.dev.js
@@ -154,7 +154,82 @@ mode: 'development'
 执行成功之后会在dev下面生成bundle.min.js正常。
 # react
 1. 安装react
+```bash
+npm install react react-dom --save
+```
+2. 创建page目录和index页面文件：
+```bash
+mkdir page
+cd page
+```
+创建index
+```bash
+mkdir index
+cd index & touch index.js & touch index.html
+```
+index.js
+```javascript
+import ReactDom from 'react-dom';
+import Main from './Main/Main.jsx';
 
+ReactDom.render(<Main />, document.getElementById('root'));
+```
+index.html
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>index</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+</head>
+<body>
+<div id="root"></div>
+</body>
+</html>
+```
+3. 创建Main组件
+```javascript
+
+import React from 'react';
+
+class Main extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+    }
+
+    render() {
+
+        return (<div>Main</div>);
+    }
+}
+
+export default Main;
+```
+* export 和 export default区别：
+export可以有多个
+```javascript
+xx.js
+export const test1 = 'a'
+export function test2() {}
+yy.js
+import { test1, test2 } from 'xx.js';
+```
+export default只能有1个
+```javascript
+xx.js
+let test1 = 'a';
+export default test1;
+yy.js
+import test1 from 'xx.js';
+```
+* export 和 module.exports
+```javascript
+var exports = module.exports;
+```
 ## License
 
 [GNU GPLv3](LICENSE)
