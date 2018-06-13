@@ -266,7 +266,7 @@ npm install url-loader --save
         ]
     },
 ```
-`limit:`表示超过多少就使用base64来代替，单位是byte
+`limit:`表示超过多少就使用base64来代替，单位是byte<br>
 `name:`可以设置图片的路径，名称和是否使用hash 具体[参考](https://github.com/webpack-contrib/url-loader)
 
 # 引入babel
@@ -301,7 +301,7 @@ touch .babelrc
 }
 ```
 babel支持自定义的预设(presets)或插件(plugins),只有配置了这两个才能让babel生效，单独的安装babel是无意义的
-`presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上，`state-0|1|2|..`代表有很多没有列入标准的语法,[参考](https://babeljs.io/docs/en/babel-preset-stage-0.html)
+`presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上，`state-0|1|2|..`代表有很多没有列入标准的语法,[参考](https://babeljs.io/docs/en/babel-preset-stage-0.html)<br>
 `plugins`:代表babel解析的时候使用哪些插件，作用和presets类似，优先级是从上往下
 依次安装：
 ```bash
@@ -312,9 +312,9 @@ npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
 
 ```bash
 tnpm install html-webpack-plugin --save
-```javascript
-配置：
 ```
+配置：
+```javascript
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 ...
 plugins: [
@@ -324,7 +324,7 @@ plugins: [
     })
 ]
 ```
-`filename`:可以设置html输出的路径和文件名
+`filename`:可以设置html输出的路径和文件名<br>
 `template`:可以设置已哪个html文件为模版
 更多参数配置可以[参考](https://github.com/jantimon/html-webpack-plugin)
 ## License
