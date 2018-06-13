@@ -238,7 +238,12 @@ import test1 from 'xx.js';
 ```javascript
 let exports = module.exports;
 ```
-4. 修改webpack配置文件
+4. 修改webpack配置入口文件
+```javascript
+entry: [
+    path.resolve(srcRoot,'./page/index/index.js')
+],
+```
 # 配置loader
 
 1. 处理样式文件需要这些loader:
@@ -307,7 +312,8 @@ touch .babelrc
 	"plugins": []
 }
 ```
-babel支持自定义的预设(presets)或插件(plugins),只有配置了这两个才能让babel生效，单独的安装babel是无意义的
+babel支持自定义的预设(presets)或插件(plugins),只有配置了这两个才能让babel生效，单独的安装babel是无意义的<br>
+<br>
 `presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上,`state-0|1|2|..`代表有很多没有列入标准的语法回已state-x表示,[参考这里](https://babeljs.io/docs/en/babel-preset-stage-0.html)<br>
 `plugins`:代表babel解析的时候使用哪些插件，作用和presets类似，优先级是从上往下。
 依次安装：
