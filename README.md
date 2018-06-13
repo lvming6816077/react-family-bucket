@@ -5,6 +5,9 @@
 3. [初始化项目](#banben)
 4. [webpack](#banben)
 5. [react](#banben)
+6. [配置loader](#banben)
+7. [引入babel](#banben)
+7. [使用HtmlWebpackPlugin](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -115,6 +118,7 @@ touch app.js
 写入基本的webpack配置，可以参考[文档](https://webpack.js.org/)：
 ```javascript
 const path = require('path');
+const srcRoot = './src';
 module.exports = {
 
     // 输入配置
@@ -159,6 +163,7 @@ npm install react react-dom --save
 ```
 2. 创建page目录和index页面文件：
 ```bash
+mkdir src
 mkdir page
 cd page
 ```
@@ -209,7 +214,8 @@ class Main extends React.Component {
 
 export default Main;
 ```
-* export 和 export default区别：
+* `export` 和 `export default`区别：
+
 export可以有多个
 ```javascript
 xx.js
@@ -226,10 +232,101 @@ export default test1;
 yy.js
 import test1 from 'xx.js';
 ```
-* export 和 module.exports
+* `export` 和 `module.exports`
 ```javascript
-var exports = module.exports;
+let exports = module.exports;
 ```
+4. 修改webpack配置文件
+# 配置loader
+
+1. css-loader，sass-loader，style-loader处理样式文件需要这些loader
+```bash
+npm install css-loader sass-loader style-loader file-loader --save
+```
+配置：
+```javascript
+    module: {
+        // 加载器配置
+        rules: [
+            { test: /\.css$/, use: ['style-loader', 'css-loader'], include: path.resolve(srcRoot)},
+            { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'], include: path.resolve(srcRoot)}
+        ]
+    },
+```
+2. url-loader处理处理静态文件
+```bash
+npm install url-loader --save
+```
+配置：
+```
+    module: {
+        // 加载器配置
+        rules: [
+            { test: /\.(png|jpg|jpeg)$/, use: 'url-loader?limit=8192&name=images/[name].[hash].[ext]', include: path.resolve(srcRoot)}
+        ]
+    },
+```
+`limit:`表示超过多少就使用base64来代替，单位是byte
+`name:`可以设置图片的路径，名称和是否使用hash 具体[参考](https://github.com/webpack-contrib/url-loader)
+
+# 引入babel
+
+[bebel](https://babeljs.io/)是用来解析es6语法或者是es7语法分解析器，让开发者能够使用新的es语法，同时支持jsx，vue等多种框架。
+1. 安装babel
+```bash
+npm install babel-core babel-loader --save
+```
+配置：
+```
+    module: {
+        // 加载器配置
+        rules: [
+            { test: /\.(js|jsx)$/, use: [{loader:'babel-loader'}] ,include: path.resolve(srcRoot)},
+        ]
+    },
+```
+babel配置文件：`.babelrc`
+```bash
+touch .babelrc
+```
+配置：
+```javascript
+{
+	"presets": [
+		"es2015",
+		"react",
+		"stage-0"
+	],
+	"plugins": []
+}
+```
+babel支持自定义的预设(presets)或插件(plugins),只有配置了这两个才能让babel生效，单独的安装babel是无意义的
+`presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上，`state-0|1|2|..`代表有很多没有列入标准的语法,[参考](https://babeljs.io/docs/en/babel-preset-stage-0.html)
+`plugins`:代表babel解析的时候使用哪些插件，作用和presets类似，优先级是从上往下
+依次安装：
+```bash
+npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
+```
+# 使用HtmlWebpackPlugin
+记得我们之前新建的index.html么 我们执行构建命令之后并没有将index.html打包到dev目录下 我们需要[HtmlWebpackPlugin](https://github.com/jantimon/html-webpack-plugin)来将我们output的js和html结合起来
+
+```bash
+tnpm install html-webpack-plugin --save
+```javascript
+配置：
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+...
+plugins: [
+    new HtmlWebpackPlugin({
+        filename: path.resolve(devPath, 'index.html'),
+        template: path.resolve(srcRoot, './page/index/index.html'),
+    })
+]
+```
+`filename`:可以设置html输出的路径和文件名
+`template`:可以设置已哪个html文件为模版
+更多参数配置可以[参考](https://github.com/jantimon/html-webpack-plugin)
 ## License
 
 [GNU GPLv3](LICENSE)
