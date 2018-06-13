@@ -97,13 +97,13 @@ npm init
 ```
 如果有特殊需要，可以填入自己的配置，一路回车下来，会生成一个`package.json`，里面是你项目的基本信息，后面的npm依赖安装也会配置在这里。
 # webpack
-1, 安装webpack
+1, 安装[webpack](https://webpack.js.org/)
 ```bash
 npm install webpack --save
 or
 npm install webpack --g
 ```
-`--save`是将当前webpack安装到react-family-bucket下的`/node_modules`。
+`--save`是将当前webpack安装到react-family-bucket下的`/node_modules`。<br>
 `--g`是将当前webpack安装到全局下面，可以在node的安装目录下找到全局的`/node_modules`。
 
 2，配置webopack配置文件
@@ -115,7 +115,7 @@ touch webpack.config.dev.js
 ```bash
 touch app.js
 ```
-写入基本的webpack配置，可以参考[文档](https://webpack.js.org/)：
+写入基本的webpack配置，可以[参考这里](https://webpack.js.org/)：
 ```javascript
 const path = require('path');
 const srcRoot = './src';
@@ -157,7 +157,7 @@ mode: 'development'
 ```
 执行成功之后会在dev下面生成bundle.min.js正常。
 # react
-1. 安装react
+1. 安装[react](https://reactjs.org/)
 ```bash
 npm install react react-dom --save
 ```
@@ -218,18 +218,20 @@ export default Main;
 
 export可以有多个
 ```javascript
-xx.js
+xx.js:
 export const test1 = 'a'
 export function test2() {}
-yy.js
+
+yy.js:
 import { test1, test2 } from 'xx.js';
 ```
 export default只能有1个
 ```javascript
-xx.js
+xx.js:
 let test1 = 'a';
 export default test1;
-yy.js
+
+yy.js:
 import test1 from 'xx.js';
 ```
 * `export` 和 `module.exports`
@@ -239,7 +241,10 @@ let exports = module.exports;
 4. 修改webpack配置文件
 # 配置loader
 
-1. css-loader，sass-loader，style-loader处理样式文件需要这些loader
+1. 处理样式文件需要这些loader:
+* [css-loader](https://github.com/webpack-contrib/css-loader)
+* [sass-loader](https://github.com/webpack-contrib/sass-loader)
+* [style-loader](https://github.com/webpack-contrib/style-loader)
 ```bash
 npm install css-loader sass-loader style-loader file-loader --save
 ```
@@ -253,7 +258,7 @@ npm install css-loader sass-loader style-loader file-loader --save
         ]
     },
 ```
-2. url-loader处理处理静态文件
+2. [url-loader](https://github.com/webpack-contrib/url-loader)处理处理静态文件
 ```bash
 npm install url-loader --save
 ```
@@ -267,12 +272,14 @@ npm install url-loader --save
     },
 ```
 `limit:`表示超过多少就使用base64来代替，单位是byte<br>
-`name:`可以设置图片的路径，名称和是否使用hash 具体[参考](https://github.com/webpack-contrib/url-loader)
+`name:`可以设置图片的路径，名称和是否使用hash 具体[参考这里](https://github.com/webpack-contrib/url-loader)
 
 # 引入babel
 
 [bebel](https://babeljs.io/)是用来解析es6语法或者是es7语法分解析器，让开发者能够使用新的es语法，同时支持jsx，vue等多种框架。
 1. 安装babel
+* [babel-core](https://www.npmjs.com/package/babel-core)
+* [babel-loader](https://www.npmjs.com/package/babel-loader)
 ```bash
 npm install babel-core babel-loader --save
 ```
@@ -301,9 +308,12 @@ touch .babelrc
 }
 ```
 babel支持自定义的预设(presets)或插件(plugins),只有配置了这两个才能让babel生效，单独的安装babel是无意义的
-`presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上，`state-0|1|2|..`代表有很多没有列入标准的语法,[参考](https://babeljs.io/docs/en/babel-preset-stage-0.html)<br>
-`plugins`:代表babel解析的时候使用哪些插件，作用和presets类似，优先级是从上往下
+`presets`：代表babel支持那种语法(就是你用那种语法写)，优先级是从下往上,`state-0|1|2|..`代表有很多没有列入标准的语法回已state-x表示,[参考这里](https://babeljs.io/docs/en/babel-preset-stage-0.html)<br>
+`plugins`:代表babel解析的时候使用哪些插件，作用和presets类似，优先级是从上往下。
 依次安装：
+* [babel-preset-es2015](https://www.npmjs.com/package/babel-preset-es2015)
+* [babel-preset-react](https://www.npmjs.com/package/babel-preset-react)
+* [babel-preset-stage-0](https://www.npmjs.com/package/babel-preset-stage-0)
 ```bash
 npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
 ```
@@ -326,7 +336,7 @@ plugins: [
 ```
 `filename`:可以设置html输出的路径和文件名<br>
 `template`:可以设置已哪个html文件为模版
-更多参数配置可以[参考](https://github.com/jantimon/html-webpack-plugin)
+更多参数配置可以[参考这里](https://github.com/jantimon/html-webpack-plugin)
 ## License
 
 [GNU GPLv3](LICENSE)
