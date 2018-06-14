@@ -5,10 +5,11 @@
 3. [初始化项目](#banben)
 4. [webpack](#banben)
 5. [react](#banben)
-6. [配置loader](#banben)
+6. [配置loader(sass,jsx)](#banben)
 7. [引入babel](#banben)
 8. [使用HtmlWebpackPlugin](#banben)
 9. [redux](#banben)
+10. [使用webpack-dev-server](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -145,7 +146,13 @@ webpack --config webpack.config.dev.js
 ```bash
 ./node_modules/.bin/webpack --config webpack.config.dev.js
 ```
-执行命令之后，会发现需要安装`webpack-cli`，（webpack4之后需要安装这个）
+在package.json中添加执行命令：
+```json
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack --config webpack.config.dev.js",
+  },
+```
+执行`npm run dev`命令之后，会发现需要安装`webpack-cli`，（webpack4之后需要安装这个）
 ```bash
 npm install webpack-cli --save
 ```
@@ -156,7 +163,8 @@ npm install webpack-cli --save
 mode: 'development'
 ...
 ```
-执行成功之后会在dev下面生成bundle.min.js正常。
+成功之后会在dev下面生成bundle.min.js代表正常。<br>
+如果想要动态监听文件变化需要在命令后面添加  `--watch`
 # react
 1. 安装[react](https://reactjs.org/)
 ```bash
@@ -346,6 +354,7 @@ plugins: [
 更多参数配置可以[参考这里](https://github.com/jantimon/html-webpack-plugin)
 
 # redux
+
 关于[redux](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)的使用可以参考阮一峰老师的入门[教程](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
 
 1. 安装redux
@@ -377,7 +386,8 @@ npm install redux react-redux --save
 ```
 
 3. 修改代码，引入redux,这里以一个redux addtodo为demo例子：<br>
-index.js
+
+`index.js`
 ```javascript
 import ReactDom from 'react-dom';
 import React from 'react';
@@ -391,7 +401,7 @@ ReactDom.render(
 	</Provider>
 , document.getElementById('root'));
 ```
-store.js
+`store.js`
 ```javascript
 import { createStore } from 'redux';
 import todoReducer from './reducers/todoReducer.js';
@@ -400,7 +410,7 @@ const store = createStore(todoReducer);
 
 export default store;
 ```
-tabReducer.js
+`tabReducer.js`
 ```javascript
 import { ADD_TODO } from '../actions/actionTypes.js';
 
@@ -422,7 +432,7 @@ const todoReducer = (state = initialState, action) => {
 
 export default todoReducer;
 ```
-Main.jsx
+`Main.jsx`
 ```javascript
 import React from 'react';
 import { connect } from 'react-redux';
@@ -451,7 +461,7 @@ export default connect(
     })
 )(Main);
 ```
-todoAction.js
+`todoAction.js`
 ```javascript
 import { ADD_TODO } from './actionTypes.js';
 
@@ -462,6 +472,36 @@ export const addTodo = (obj) => {
   };
 };
 ```
+
+# 使用webpack-dev-server
+[webpack-dev-server](https://github.com/jantimon/webpack-dev-server)是一个小型的`Node.js Express`服务器,它使用webpack-dev-middleware来服务于webpack的包。
+1. 安装
+```bash
+npm install webpack-dev-server --save
+```
+修改在package.json中添加的执行命令：
+```json
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.dev.js",
+  },
+```
+2. 配置webpack配置文件：
+```json
+devServer: {
+    contentBase: devPath,
+    compress: true,
+},
+```
+`contentBase` 表示server文件的根目录
+`compress` 表示开启gzip
+更多的配置文档[参考这里](https://webpack.docschina.org/configuration/dev-server/)
+
+* `webpack-dev-server`默认情况下会将output的内容放在内存中，是看不到物理的文件的，如果想要看到物理的dev下面的文件可以安装[write-file-webpack-plugin](https://www.npmjs.com/package/webpack-dev-server)这个插件。
+
+* `webpack-dev-server`默认会开启livereload功能
+
+3. devtool功能：
+具体来说添加了`devtool: 'inline-source-map'`之后，利用source-map你在chrome控制台看到的source源码都是真正的源码，未压缩，未编译前的代码，没有添加，你看到的代码是真实的压缩过，编译过的代码，更多devtool的配置可以[参考这里](https://webpack.docschina.org/configuration/devtool/)
 ## License
 
 [GNU GPLv3](LICENSE)
