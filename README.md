@@ -376,14 +376,13 @@ npm install redux react-redux --save
 
 ```
 
-3. 修改代码，引入redux
+3. 修改代码，引入redux,这里以一个redux addtodo为demo例子：<br>
 index.js
 ```javascript
 import ReactDom from 'react-dom';
 import React from 'react';
 import Main from './Main/Main.jsx';
 import store from './store.js';
-
 import { Provider } from 'react-redux';
 
 ReactDom.render(
@@ -394,20 +393,16 @@ ReactDom.render(
 ```
 store.js
 ```javascript
-
 import { createStore } from 'redux';
 import todoReducer from './reducers/todoReducer.js';
 
-
 const store = createStore(todoReducer);
-
 
 export default store;
 ```
 tabReducer.js
 ```javascript
 import { ADD_TODO } from '../actions/actionTypes.js';
-
 
 const initialState = {
       num: 0
@@ -434,28 +429,13 @@ import { connect } from 'react-redux';
 import { addTodo } from '../actions/todoAction.js';
 
 class Main extends React.Component {
-
-    constructor(props) {
-        super(props);
-  //       async function foo() {
-		//   return await 1
-		// }
-
-		// foo().then(function(val) {
-		//   console.log(val)  // should output 1
-		// })
-
-
-    }
     onClick(){
     	let num = this.props.num;
     	this.props.dispatch(addTodo({
     		num: num+1
     	}))
     }
-
     render() {
-
         return (
         	<div>
         		<span onClick={()=>this.onClick()}>自增</span>
@@ -463,7 +443,6 @@ class Main extends React.Component {
         	</div>
         );
     }
-        
 }
 
 export default connect(
