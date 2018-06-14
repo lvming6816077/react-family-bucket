@@ -7,7 +7,8 @@
 5. [react](#banben)
 6. [配置loader](#banben)
 7. [引入babel](#banben)
-7. [使用HtmlWebpackPlugin](#banben)
+8. [使用HtmlWebpackPlugin](#banben)
+9. [redux](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -327,7 +328,7 @@ npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
 记得我们之前新建的index.html么 我们执行构建命令之后并没有将index.html打包到dev目录下 我们需要[HtmlWebpackPlugin](https://github.com/jantimon/html-webpack-plugin)来将我们output的js和html结合起来
 
 ```bash
-tnpm install html-webpack-plugin --save
+npm install html-webpack-plugin --save
 ```
 配置：
 ```javascript
@@ -343,6 +344,145 @@ plugins: [
 `filename`:可以设置html输出的路径和文件名<br>
 `template`:可以设置已哪个html文件为模版
 更多参数配置可以[参考这里](https://github.com/jantimon/html-webpack-plugin)
+
+# redux
+关于[redux](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)的使用可以参考阮一峰老师的入门[教程](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
+
+1. 安装redux
+* [redux](https://www.npmjs.com/package/redux)
+* [react-redux](https://www.npmjs.com/package/react-redux)
+
+```bash
+npm install redux react-redux --save
+```
+
+2. 新建`reducers`，`actions`目录和文件
+```
+    |     |      |—— index/                          
+    |     |      |        |—— Main/                   * 组件代码
+    |     |      |        |       |—— Main.jsx        * 组件jsx
+    |     |      |        |       |—— Main.scss       * 组件css
+    |     |      |        |
+    |     |      |        |—— actions/ 
+    |     |      |        |       |—— actionTypes.js  * action常量
+    |     |      |        |       |—— todoAction.js   * action
+    |     |      |        |
+    |     |      |        |—— reducers/ 
+    |     |      |        |       |—— todoReducer.js   * reducer
+    |     |      |        |
+    |     |      |        |—— store.js
+    |     |      |        |
+    |     |      |        |—— index.js
+
+```
+
+3. 修改代码，引入redux
+index.js
+```javascript
+import ReactDom from 'react-dom';
+import React from 'react';
+import Main from './Main/Main.jsx';
+import store from './store.js';
+
+import { Provider } from 'react-redux';
+
+ReactDom.render(
+	<Provider store={store}>
+		<Main />
+	</Provider>
+, document.getElementById('root'));
+```
+store.js
+```javascript
+
+import { createStore } from 'redux';
+import todoReducer from './reducers/todoReducer.js';
+
+
+const store = createStore(todoReducer);
+
+
+export default store;
+```
+tabReducer.js
+```javascript
+import { ADD_TODO } from '../actions/actionTypes.js';
+
+
+const initialState = {
+      num: 0
+};
+
+const addTodo = (state, action) => {
+
+  return { ...state, num: action.obj.num }
+}
+
+const todoReducer = (state = initialState, action) => {
+  switch(action.type) {
+    case ADD_TODO: return addTodo(state, action);
+    default: return state;
+  }
+};
+
+export default todoReducer;
+```
+Main.jsx
+```javascript
+import React from 'react';
+import { connect } from 'react-redux';
+import { addTodo } from '../actions/todoAction.js';
+
+class Main extends React.Component {
+
+    constructor(props) {
+        super(props);
+  //       async function foo() {
+		//   return await 1
+		// }
+
+		// foo().then(function(val) {
+		//   console.log(val)  // should output 1
+		// })
+
+
+    }
+    onClick(){
+    	let num = this.props.num;
+    	this.props.dispatch(addTodo({
+    		num: num+1
+    	}))
+    }
+
+    render() {
+
+        return (
+        	<div>
+        		<span onClick={()=>this.onClick()}>自增</span>
+        		<span>{this.props.num}</span>
+        	</div>
+        );
+    }
+        
+}
+
+export default connect(
+    state => ({
+        num: state.num
+    })
+)(Main);
+```
+todoAction.js
+```javascript
+import { ADD_TODO } from './actionTypes.js';
+
+export const addTodo = (obj) => {
+  return {
+    type: ADD_TODO,
+    obj: obj
+  };
+};
+```
 ## License
 
 [GNU GPLv3](LICENSE)
