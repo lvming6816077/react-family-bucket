@@ -11,6 +11,9 @@
 9. [redux](#banben)
 10. [使用webpack-dev-server](#banben)
 11. [多入口页面配置](#banben)
+12. [如何理解`entry point(bundle)`,`chunk`,`module`](#banben)
+13. [多入口页面html配置](#banben)
+14. [模块热替换（Hot Module Replacement）](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -386,7 +389,7 @@ npm install redux react-redux --save
 
 ```
 
-3. 修改代码，引入redux,这里以一个redux addtodo为demo例子：<br>
+3. 修改代码，引入redux,这里以一个redux todo为demo例子：<br>
 
 `index.js`
 ```javascript
@@ -510,18 +513,154 @@ devServer: {
 1. 在entry入口配置时，传入对象而不是单独数组,output时利用`[name]`关键字来区分输出文件例如：
 ```javascript
 entry: {
-    index: [path.resolve(srcRoot,'./page/index/index.js'),],
-    detail: path.resolve(srcRoot,'./page/detail/index.js'),
-    home: path.resolve(srcRoot,'./page/home/index.js'),
-}
+    index: [path.resolve(srcRoot,'./page/index/index1.js'),path.resolve(srcRoot,'./page/index/index2.js')],
+    detail: path.resolve(srcRoot,'./page/detail/detail.js'),
+    home: path.resolve(srcRoot,'./page/home/home.js'),
+},
 output: {
     path: path.resolve(__dirname, './dev'),
 
     filename: '[name].min.js'
 },
 ```
+# 如何理解`entry point(bundle)`,`chunk`,`module`
+
 在webpack中，如何理解`entry point(bundle)`,`chunk`,`module`?
 ![](https://oc5n93kni.qnssl.com/image/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-06-15%20%E4%B8%8B%E5%8D%889.06.45.png)
+
+根据图上的表述，我这里简单说一下便于理解的结论：<br>
+* 配置中每个文件例如index1.js,index2.js,detail.js,home.js都属于`entry point`.
+* entry这个配置中，每个key值,index,detail,home都相当于`chunk`。
+* 我们在代码中的require或者import的都属于`module`，这点很好理解。
+* `chunk`的分类比较特别，有`entry chunk`,`initial chunk`,`normal chunk`,参考[这个文章](https://github.com/webpack/webpack.js.org/issues/970)
+* 正常情况下，一个`chunk`对应一个output,在使用了`CommonsChunkPlugin`或者`require.ensure`之后，`chunk`就变成了`initial chunk`,`normal chunk`，这时，一个`chunk`对应多个output。<br>
+理解这些概念对于后续使用webpack插件有很大的帮助。
+
+2. 通过node动态遍历需要entry point的目录，来动态生成entry：
+```javascript
+const pageDir = path.resolve(srcRoot, 'page');
+function getEntry() {
+	let entryMap = {};
+
+	fs.readdirSync(pageDir).forEach((pathname)=>{
+		let fullPathName = path.resolve(pageDir, pathname);
+		let stat = fs.statSync(fullPathName);
+		let fileName = path.resolve(fullPathName, 'index.js');
+
+		if (stat.isDirectory() && fs.existsSync(fileName)) {
+			entryMap[pathname] = fileName;
+		}
+
+	});
+
+	return entryMap;
+}
+{
+	...
+	entry: getEntry()
+	...
+}
+```
+
+本demo采用的是第二中写法，能够更加灵活。
+
+# 多入口页面html配置
+
+之前我们配置`HtmlWebpackPlugin`时，同样采用的是但页面的配置，这里我们将进行多页面改造,`entryMap`是上一步得到的entry：
+```javascript
+function htmlAarray(entryMap) {
+	let htmlAarray = [];
+
+	Object.keys(entryMap).forEach(function(key){
+		let fullPathName = path.resolve(pageDir, key);
+		let fileName = path.resolve(fullPathName, key + '.html')
+		if (fs.existsSync(fileName)) {
+			htmlAarray.push(new HtmlWebpackPlugin({
+	            chunks: key, // 注意这里的key就是chunk
+	            filename: key + '.html',
+				template: fileName,
+				inlineSource:  '.(js|css)'
+	        }))
+		}
+	});
+
+	return htmlAarray;
+
+}
+```
+修改plugin配置：
+```javascript
+plugins: [
+     ...
+].concat(htmlMap)
+```
+# 模块热替换（Hot Module Replacement）
+
+[模块热替换](https://webpack.docschina.org/guides/hot-module-replacement)(Hot Module Replacement 或 HMR)是 webpack 提供的最有用的功能之一。它允许在运行时更新各种模块，而无需进行完全刷新,很高大上有木有！
+
+下面说一下配置方法，它需要结合`devServer`使用：
+```javascript
+devServer: {
+	hot: true // 开启HMR
+},
+```
+开启plugin：
+```javascript
+const webpack = require('webpack');
+plugins: [
+	new webpack.NamedModulesPlugin(),
+	new webpack.HotModuleReplacementPlugin(),
+].concat(htmlMap)
+```
+
+结合React一起使用：<br>
+
+1. 安装[react-hot-loader](https://github.com/jantimon/react-hot-loader),
+```bash
+npm install react-hot-loader --save
+```
+并新建一个Container.jsx:<br>
+```javascript
+import React from 'react';
+import Main from './Main.jsx';
+import { hot } from 'react-hot-loader'
+
+class Container extends React.Component {
+
+    render() {
+        return <Main />
+    }
+        
+}
+export default hot(module)(Container);
+```
+
+2. 修改store.js新增下面代码，为了让reducer也能实时热替换
+```javascript
+if (module.hot) {
+    module.hot.accept('./reducers/todoReducer.js', () => {
+      const nextRootReducer = require('./reducers/todoReducer.js').default;
+      store.replaceReducer(nextRootReducer);
+    });
+}
+```
+3. 修改index.js
+```javascript
+import ReactDom from 'react-dom';
+import React from 'react';
+import Container from './Main/Container.jsx';
+import store from './store.js';
+
+import { Provider } from 'react-redux';
+
+ReactDom.render(
+	<Provider store={store}>
+		<Container />
+	</Provider>
+, document.getElementById('root'));
+```
+
+当控制台看到`[WDS] Hot Module Replacement enabled.`代表开启成功
 ## License
 
 [GNU GPLv3](LICENSE)
