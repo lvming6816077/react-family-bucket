@@ -10,6 +10,7 @@
 8. [使用HtmlWebpackPlugin](#banben)
 9. [redux](#banben)
 10. [使用webpack-dev-server](#banben)
+11. [多入口页面配置](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -488,8 +489,8 @@ npm install webpack-dev-server --save
 2. 配置webpack配置文件：
 ```json
 devServer: {
-    contentBase: devPath,
-    compress: true,
+    "contentBase": devPath,
+    "compress": true,
 },
 ```
 `contentBase` 表示server文件的根目录
@@ -500,8 +501,27 @@ devServer: {
 
 * `webpack-dev-server`默认会开启livereload功能
 
-3. devtool功能：
+3. `devtool`功能：
 具体来说添加了`devtool: 'inline-source-map'`之后，利用source-map你在chrome控制台看到的source源码都是真正的源码，未压缩，未编译前的代码，没有添加，你看到的代码是真实的压缩过，编译过的代码，更多devtool的配置可以[参考这里](https://webpack.docschina.org/configuration/devtool/)
+
+# 多入口页面配置
+在之前的配置中，都是基于单入口页面配置的，entry和output只有一个文件，但是实际项目很多情况下是多页面的，在配置多页面时，有2中方法可以选择：
+
+1. 在entry入口配置时，传入对象而不是单独数组,output时利用`[name]`关键字来区分输出文件例如：
+```javascript
+entry: {
+    index: [path.resolve(srcRoot,'./page/index/index.js'),],
+    detail: path.resolve(srcRoot,'./page/detail/index.js'),
+    home: path.resolve(srcRoot,'./page/home/index.js'),
+}
+output: {
+    path: path.resolve(__dirname, './dev'),
+
+    filename: '[name].min.js'
+},
+```
+在webpack中，如何理解`entry point(bundle)`,`chunk`,`module`?
+![](https://oc5n93kni.qnssl.com/image/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-06-15%20%E4%B8%8B%E5%8D%889.06.45.png)
 ## License
 
 [GNU GPLv3](LICENSE)
