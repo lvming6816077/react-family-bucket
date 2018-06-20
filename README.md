@@ -14,6 +14,7 @@
 12. [如何理解`entry point(bundle)`,`chunk`,`module`](#banben)
 13. [多入口页面html配置](#banben)
 14. [模块热替换（Hot Module Replacement）](#banben)
+15. [使用ESLint](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -371,21 +372,21 @@ npm install redux react-redux --save
 
 2. 新建`reducers`，`actions`目录和文件
 ```
-    |     |      |—— index/                          
-    |     |      |        |—— Main/                   * 组件代码
-    |     |      |        |       |—— Main.jsx        * 组件jsx
-    |     |      |        |       |—— Main.scss       * 组件css
-    |     |      |        |
-    |     |      |        |—— actions/ 
-    |     |      |        |       |—— actionTypes.js  * action常量
-    |     |      |        |       |—— todoAction.js   * action
-    |     |      |        |
-    |     |      |        |—— reducers/ 
-    |     |      |        |       |—— todoReducer.js   * reducer
-    |     |      |        |
-    |     |      |        |—— store.js
-    |     |      |        |
-    |     |      |        |—— index.js
+|—— index/                          
+|—— Main/                   * 组件代码
+|       |—— Main.jsx        * 组件jsx
+|       |—— Main.scss       * 组件css
+|
+|—— actions/ 
+|       |—— actionTypes.js  * action常量
+|       |—— todoAction.js   * action
+|
+|—— reducers/ 
+|       |—— todoReducer.js  * reducer
+|
+|—— store.js
+|
+|—— index.js
 
 ```
 
@@ -635,6 +636,7 @@ class Container extends React.Component {
 export default hot(module)(Container);
 ```
 
+结合redux：如果项目没有使用redux，可以无需配置后面2步<br>
 2. 修改store.js新增下面代码，为了让reducer也能实时热替换
 ```javascript
 if (module.hot) {
@@ -661,6 +663,59 @@ ReactDom.render(
 ```
 
 当控制台看到`[WDS] Hot Module Replacement enabled.`代表开启成功
+
+# 使用ESLint
+[ESLint](https://eslint.org/) 是众多 Javascript Linter 中的其中一种，其他比较常见的还有 [JSLint](https://www.jslint.com/) 跟 [JSHint](http://jshint.com/)，之所以用 ESLint 是因为他可以自由选择要使用哪些规则，也有很多现成的 plugin 可以使用，另外他对 ES6 还有 JSX 的支持程度跟其他 linter 相比之下也是最高的。
+
+1. 安装ESLint
+```bash
+npm install eslint eslint-loader babel-eslint --save
+```
+其中`eslint-loader`是将webpack和eslint结合起来在webpack的配置文件中新增一个eslint-loader种，修改如下
+```javascript
+{ test: /\.(js|jsx)$/, use: [{loader:'babel-loader'},{loader:'eslint-loader'}] ,include: path.resolve(srcRoot)},
+```
+
+2. 新建`.eslintrc`配置文件,将parser配置成`babel-eslint`
+```json
+{
+    "extends": ["eslint:recommended"],
+    
+    "parser": "babel-eslint",
+
+    "globals": {
+    },
+    "rules": {
+    }
+}
+```
+
+3. 安装[eslint-plugin-react](https://github.com/jantimon/eslint-plugin-react):
+```bash
+npm install eslint-plugin-react --save
+```
+* 说明一下，正常情况下每个eslint规则都是需要在`rule`下面配置，如果什么都不配置，其实本身eslint是不生效的。
+* eslint本身有很多默认的规则模版，可以通过`extends`来配置，默认可以使用`eslint:recommended`。
+* 在使用react开发时可以安装`eslint-plugin-react`来告知使用react专用的规则来lint。
+3. 修改`.eslintrc`配置文件,增加rules，更多rules配置可以[参考这里](https://eslint.org/docs/rules/)
+```javascript
+{
+    "extends": ["eslint:recommended","plugin:react/recommended"],
+    
+    "parser": "babel-eslint",
+
+    "globals": {
+        "window": true,
+        "document": true,
+        "module": true,
+        "require": true
+    },
+    "rules": {
+        "react/prop-types" : "off",
+        "no-console" : "off"
+    }
+}
+```
 ## License
 
 [GNU GPLv3](LICENSE)
