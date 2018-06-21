@@ -801,13 +801,13 @@ const store = createStore(mainReducer,applyMiddleware(middleware));
 
 5. 使用`Route`和`Link`和`withRouter`:
 先说说都是干嘛的：<br>
-[Route](https://reacttraining.com/react-router/web/api/Route):component里面的内容即是tab的主要内容，这个从react-router4开始生效：
+* [Route](https://reacttraining.com/react-router/web/api/Route):component里面的内容即是tab的主要内容，这个从react-router4开始生效：
 ```javascript
 <Route exact path="/" component={Div1}></Route>
 <Route path="/2" component={Div2}></Route>
 ```
-[Link](https://reacttraining.com/react-router/web/api/Link):通常也可以用[NavLink](https://reacttraining.com/react-router/web/api/NavLink)，相当于tab按钮，控制router的切换,`activeClass`表示当前tab处于激活态时应用上的class。
-[withRouter](https://reacttraining.com/react-router/web/api/withRouter):如果你用了redux，那么你一定要引入它。
+* [Link](https://reacttraining.com/react-router/web/api/Link):通常也可以用[NavLink](https://reacttraining.com/react-router/web/api/NavLink)，相当于tab按钮，控制router的切换,`activeClass`表示当前tab处于激活态时应用上的class。
+* [withRouter](https://reacttraining.com/react-router/web/api/withRouter):如果你用了redux，那么你一定要引入它。
 
 如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即：
 ```javascript
@@ -815,7 +815,7 @@ const store = createStore(mainReducer,applyMiddleware(middleware));
 	  replace={true}
 	  to="/2"
 	  activeClassName="selected"
-	>切换到1号</NavLink>
+	>切换到2号</NavLink>
 ```
 6. 设置初始化路由：
 * `BrowserRouter`和`HashRouter`:
