@@ -516,7 +516,7 @@ devServer: {
 3. `devtool`功能：
 具体来说添加了`devtool: 'inline-source-map'`之后，利用source-map你在chrome控制台看到的source源码都是真正的源码，未压缩，未编译前的代码，没有添加，你看到的代码是真实的压缩过，编译过的代码，更多devtool的配置可以[参考这里](https://webpack.docschina.org/configuration/devtool/)
 
-# 多入口页面配置
+# 多入口文件配置
 在之前的配置中，都是基于单入口页面配置的，entry和output只有一个文件，但是实际项目很多情况下是多页面的，在配置多页面时，有2中方法可以选择：
 
 1. 在entry入口配置时，传入对象而不是单独数组,output时利用`[name]`关键字来区分输出文件例如：
@@ -532,19 +532,6 @@ output: {
     filename: '[name].min.js'
 },
 ```
-# 如何理解`entry point(bundle)`,`chunk`,`module`
-
-在webpack中，如何理解`entry point(bundle)`,`chunk`,`module`?
-![](https://oc5n93kni.qnssl.com/image/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-06-15%20%E4%B8%8B%E5%8D%889.06.45.png)
-
-根据图上的表述，我这里简单说一下便于理解的结论：<br>
-* 配置中每个文件例如index1.js,index2.js,detail.js,home.js都属于`entry point`.
-* entry这个配置中，每个key值,index,detail,home都相当于`chunk`。
-* 我们在代码中的require或者import的都属于`module`，这点很好理解。
-* `chunk`的分类比较特别，有`entry chunk`,`initial chunk`,`normal chunk`,参考[这个文章](https://github.com/webpack/webpack.js.org/issues/970)
-* 正常情况下，一个`chunk`对应一个output,在使用了`CommonsChunkPlugin`或者`require.ensure`之后，`chunk`就变成了`initial chunk`,`normal chunk`，这时，一个`chunk`对应多个output。<br>
-理解这些概念对于后续使用webpack插件有很大的帮助。
-
 2. 通过node动态遍历需要entry point的目录，来动态生成entry：
 ```javascript
 const pageDir = path.resolve(srcRoot, 'page');
@@ -572,6 +559,19 @@ function getEntry() {
 ```
 
 本demo采用的是第二中写法，能够更加灵活。
+
+# 如何理解`entry point(bundle)`,`chunk`,`module`
+
+在webpack中，如何理解`entry point(bundle)`,`chunk`,`module`?
+![](https://oc5n93kni.qnssl.com/image/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-06-15%20%E4%B8%8B%E5%8D%889.06.45.png)
+
+根据图上的表述，我这里简单说一下便于理解的结论：<br>
+* 配置中每个文件例如index1.js,index2.js,detail.js,home.js都属于`entry point`.
+* entry这个配置中，每个key值,index,detail,home都相当于`chunk`。
+* 我们在代码中的require或者import的都属于`module`，这点很好理解。
+* `chunk`的分类比较特别，有`entry chunk`,`initial chunk`,`normal chunk`,参考[这个文章](https://github.com/webpack/webpack.js.org/issues/970)
+* 正常情况下，一个`chunk`对应一个output,在使用了`CommonsChunkPlugin`或者`require.ensure`之后，`chunk`就变成了`initial chunk`,`normal chunk`，这时，一个`chunk`对应多个output。<br>
+理解这些概念对于后续使用webpack插件有很大的帮助。
 
 # 多入口页面html配置
 
@@ -726,7 +726,7 @@ npm install eslint-plugin-react --save
 ```
 
 # 使用react-router
-
+react-router强大指出在于方便代码管理，结合redux使用更加强大，同时支持web，native更多[参考这里](https://reacttraining.com/react-router/)
 1. 安装[react-router-dom](https://github.com/jantimon/react-router-dom)
 ```bash
 npm install react-router-dom --save
@@ -761,14 +761,71 @@ ReactDom.render(
 ```
 
 结合`history`,react-router一共有3中不同的router：
-* `BrowserRouter`使用`history/createBrowserHistory`:当切换时，url会动态更新，底层使用的时html5的[pushState](https://blog.csdn.net/tianyitianyi1/article/details/7426606)。
-* `HashRouter`使用`history/createHashHistory`:当切换时，动态修改hash，利用hashchange事件。
-* `MemoryRouter`使用`history/createMemoryHistory`:将路径，路由相关数据存入内存中，不涉及url相关更新，兼容性好。
+* [BrowserRouter](https://reacttraining.com/react-router/web/api/BrowserRouter)通过`history/createBrowserHistory`引入:当切换时，url会动态更新，底层使用的时html5的[pushState](https://blog.csdn.net/tianyitianyi1/article/details/7426606)。
+* [HashRouter](https://reacttraining.com/react-router/web/api/HashRouter)通过`history/createHashHistory`引入:当切换时，动态修改hash，利用hashchange事件。
+* [MemoryRouter](https://reacttraining.com/react-router/web/api/MemoryRouter)通过`history/createMemoryHistory`引入:将路径，路由相关数据存入内存中，不涉及url相关更新，兼容性好。
 
 更多配置可以[参考这里](https://reacttraining.com/react-router/)
 
-4. 
-## License
+4. 如果想要在代码逻辑中获取当前的route路径需要引入`router-reducer`:
+新建`main.js`:
+```javascript
+import { combineReducers } from 'redux';
+import { routerReducer } from "react-router-redux";
+import todoReducer from './todoReducer.js';
 
-[GNU GPLv3](LICENSE)
+const reducers = combineReducers({
+  todoReducer,
+  router: routerReducer
+});
+export default reducers;
+```
 
+修改`store.js`:
+```javascript
+import { createStore } from 'redux';
+import mainReducer from './reducers/main.js';
+
+const store = createStore(mainReducer);
+
+export default store;
+```
+然后就可以在`this.props.router`里面获取单相关的路径信息
+4. 如果需要自己通过action来触发router的跳转，需要引入`routerMiddleware`:
+```
+import { createStore,applyMiddleware } from 'redux';
+import { routerMiddleware } from "react-router-redux";
+const middleware = routerMiddleware(history);
+const store = createStore(mainReducer,applyMiddleware(middleware));
+```
+
+5. 使用`Route`和`Link`和`withRouter`:
+先说说都是干嘛的：<br>
+[Route](https://reacttraining.com/react-router/web/api/Route):component里面的内容即是tab的主要内容，这个从react-router4开始生效：
+```javascript
+<Route exact path="/" component={Div1}></Route>
+<Route path="/2" component={Div2}></Route>
+```
+[Link](https://reacttraining.com/react-router/web/api/Link):通常也可以用[NavLink](https://reacttraining.com/react-router/web/api/NavLink)，相当于tab按钮，控制router的切换,`activeClass`表示当前tab处于激活态时应用上的class。
+[withRouter](https://reacttraining.com/react-router/web/api/withRouter):如果你用了redux，那么你一定要引入它。
+
+如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即：
+```javascript
+<NavLink
+	  replace={true}
+	  to="/2"
+	  activeClassName="selected"
+	>切换到1号</NavLink>
+```
+6. 设置初始化路由：
+* `BrowserRouter`和`HashRouter`:
+```javascript
+const history = createHistory();
+history.push('2');
+```
+* `MemoryRouter`:
+```javascript
+const history = createMemoryHistory({
+    initialEntries: ['/2']
+});
+```
