@@ -15,6 +15,7 @@
 13. [多入口页面html配置](#banben)
 14. [模块热替换（Hot Module Replacement）](#banben)
 15. [使用ESLint](#banben)
+16. [使用react-router](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -420,12 +421,12 @@ export default store;
 import { ADD_TODO } from '../actions/actionTypes.js';
 
 const initialState = {
-      num: 0
+      todoList: []
 };
 
 const addTodo = (state, action) => {
 
-  return { ...state, num: action.obj.num }
+  return { ...state, todoList: state.todoList.concat(action.obj) }
 }
 
 const todoReducer = (state = initialState, action) => {
@@ -434,8 +435,8 @@ const todoReducer = (state = initialState, action) => {
     default: return state;
   }
 };
-
 export default todoReducer;
+
 ```
 `Main.jsx`
 ```javascript
@@ -444,17 +445,24 @@ import { connect } from 'react-redux';
 import { addTodo } from '../actions/todoAction.js';
 
 class Main extends React.Component {
+
     onClick(){
-    	let num = this.props.num;
+    	let text = this.refs.input;
+
     	this.props.dispatch(addTodo({
-    		num: num+1
+    		text: text.value
     	}))
     }
     render() {
         return (
         	<div>
-        		<span onClick={()=>this.onClick()}>自增</span>
-        		<span>{this.props.num}</span>
+        		<input ref="input" type="text"></input>
+        		<button onClick={()=>this.onClick()}>提交</button>
+        		<ul>
+        		{this.props.todoList.map((item, index)=>{
+        			return <li key={index}>{item.text}</li>
+        		})}
+        		</ul>
         	</div>
         );
     }
@@ -462,7 +470,7 @@ class Main extends React.Component {
 
 export default connect(
     state => ({
-        num: state.num
+        todoList: state.todoList
     })
 )(Main);
 ```
@@ -716,6 +724,50 @@ npm install eslint-plugin-react --save
     }
 }
 ```
+
+# 使用react-router
+
+1. 安装[react-router-dom](https://github.com/jantimon/react-router-dom)
+```bash
+npm install react-router-dom --save
+```
+2. 如果项目中用了redux，可以安装[react-router-redux](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-redux)
+```bash
+npm install react-router-redux@next history --save
+```
+
+3. 修改代码：
+`index.js`:
+```javascript
+import ReactDom from 'react-dom';
+import React from 'react';
+import Container from './Main/Container.jsx';
+import { store, history } from './store.js';
+
+import { Provider } from 'react-redux';
+
+import createHistory from 'history/createHashHistory';
+import { ConnectedRouter } from 'react-router-redux';
+
+const history = createHistory();
+
+ReactDom.render(
+	<Provider store={store}>
+		<ConnectedRouter history={history}>
+			<Container />
+		</ConnectedRouter>
+	</Provider>
+, document.getElementById('root'));
+```
+
+结合`history`,react-router一共有3中不同的router：
+* `BrowserRouter`使用`history/createBrowserHistory`:当切换时，url会动态更新，底层使用的时html5的[pushState](https://blog.csdn.net/tianyitianyi1/article/details/7426606)。
+* `HashRouter`使用`history/createHashHistory`:当切换时，动态修改hash，利用hashchange事件。
+* `MemoryRouter`使用`history/createMemoryHistory`:将路径，路由相关数据存入内存中，不涉及url相关更新，兼容性好。
+
+更多配置可以[参考这里](https://reacttraining.com/react-router/)
+
+4. 
 ## License
 
 [GNU GPLv3](LICENSE)
