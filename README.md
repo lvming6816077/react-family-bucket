@@ -16,6 +16,9 @@
 14. [模块热替换（Hot Module Replacement）](#banben)
 15. [使用ESLint](#banben)
 16. [使用react-router](#banben)
+16. [使用redux-thunk](#banben)
+17. [使用axios和async/await](#banben)
+
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -816,7 +819,7 @@ export default withRouter(connect(
 )(Main));
 ```
 
-* 如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即：*
+*如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即*
 ```javascript
 <NavLink
 	replace={true}
@@ -835,4 +838,62 @@ history.push('2');
 const history = createMemoryHistory({
     initialEntries: ['/2']
 });
+```
+
+# 使用redux-thunk
+
+[redux-thunk](https://www.npmjs.com/package/redux-thunk) 是一个比较流行的 redux 异步 action 中间件，比如 action 中有 setTimeout 或者通过 fetch通用远程 API 这些场景，那么久应该使用 redux-thunk 了。redux-thunk 帮助你统一了异步和同步 action 的调用方式，把异步过程放在 action 级别解决，对 component 没有影响。
+
+1. 安装`redux-thunk`:
+```bash
+npm install redux-thunk --save
+```
+2. 修改`store.js`:
+```javascript
+
+import { createStore,applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import mainReducer from './reducers/main';
+...
+const store = createStore(mainReducer, applyMiddleware(thunk));
+...
+export default store;
+```
+3. 在`action.js`使用redux-thunk：
+```javascript
+export const getData = (obj) => (dispatch, getState) => {
+  setTimeout(()=>{
+  	dispatch({
+  		type: GET_DATA,
+    	obj: obj
+  	});
+  },1000);
+};
+```
+
+# 使用axios和async/await
+
+[axios](https://github.com/axios/axios) 是一个基于Promise 用于浏览器和 nodejs 的 HTTP 客户端：
+
+* 从浏览器中创建 XMLHttpRequest
+* 从 node.js 发出 http 请求
+* 支持 Promise API
+* 自动转换JSON数据
+
+1. 安装axios:
+```bash
+npm install axios --save
+```
+
+2. 在action中使用axios：
+```javascript
+import axios from 'axios';
+export const getData = (obj) => (dispatch, getState) => {
+    axios.get('/json/comments.json').then((resp)=>{
+	     	dispatch({
+				type: GET_DATA,
+				obj: resp
+			});
+	});
+};
 ```
