@@ -808,13 +808,20 @@ const store = createStore(mainReducer,applyMiddleware(middleware));
 ```
 * [Link](https://reacttraining.com/react-router/web/api/Link):通常也可以用[NavLink](https://reacttraining.com/react-router/web/api/NavLink)，相当于tab按钮，控制router的切换,`activeClass`表示当前tab处于激活态时应用上的class。
 * [withRouter](https://reacttraining.com/react-router/web/api/withRouter):如果你用了redux，那么你一定要引入它。
+```javascript
+export default withRouter(connect(
+    state => ({
+        todoList: state.todoReducer.todoList
+    })
+)(Main));
+```
 
-如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即：
+* 如果你在使用hash时遇到`Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack`错误，可以将push改为replace即：*
 ```javascript
 <NavLink
-	  replace={true}
-	  to="/2"
-	  activeClassName="selected"
+	replace={true}
+	to="/2"
+	activeClassName="selected"
 	>切换到2号</NavLink>
 ```
 6. 设置初始化路由：
