@@ -1,72 +1,61 @@
 # 目录
 
-1. [版本说明](#initcode)
-2. [目录结构](#banben)
+1. [版本说明](#banben)
+2. [目录结构](#mulu)
 3. [初始化项目](#initcode)
-4. [webpack](#banben)
-5. [react](#banben)
-6. [配置loader(sass,jsx)](#banben)
-7. [引入babel](#banben)
-8. [使用HtmlWebpackPlugin](#banben)
-9. [redux](#banben)
-10. [使用webpack-dev-server](#banben)
-11. [多入口页面配置](#banben)
-12. [如何理解`entry point(bundle)`,`chunk`,`module`](#banben)
-13. [多入口页面html配置](#banben)
-14. [模块热替换（Hot Module Replacement）](#banben)
-15. [使用ESLint](#banben)
-16. [使用react-router](#banben)
-16. [使用redux-thunk](#banben)
-17. [使用axios和async/await](#banben)
-18. [Code Splitting](#banben)
+4. [webpack](#webpack)
+5. [react](#react)
+6. [配置loader(sass,jsx)](#loader)
+7. [引入babel](#babel)
+8. [使用HtmlWebpackPlugin](#HtmlWebpackPlugin)
+9. [redux](#redux)
+10. [使用webpack-dev-server](#webpack-dev-server)
+11. [多入口页面配置](#rukou)
+12. [如何理解`entry point(bundle)`,`chunk`,`module`](#entry)
+13. [多入口页面html配置](#html)
+14. [模块热替换（Hot Module Replacement）](#hmr)
+15. [使用ESLint](#eslint)
+16. [使用react-router](#react-router)
+16. [使用redux-thunk](#redux-thunk)
+17. [使用axios和async/await](#axios)
+18. [Code Splitting](#CodeSplitting)
 
-# 版本说明
+# 版本说明<div id="banben"></div>
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
 ```javascript
-  "dependencies": {
-    "axios": "^0.18.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
-    "file-loader": "^1.1.11",
-    "html-webpack-include-assets-plugin": "^1.0.4",
-    "node-sass": "^4.7.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-redux": "^5.0.7",
-    "react-router-dom": "^4.2.2",
-    "react-router-redux": "^5.0.0-alpha.9",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
-    "sass-loader": "^6.0.7",
-    "sass-resources-loader": "^1.3.3",
-    "script-ext-html-webpack-plugin": "^2.0.1",
-    "style-loader": "^0.20.3",
-    "url-loader": "^1.0.1",
-    "babel-core": "^6.26.0",
+"dependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
-    "babel-plugin-react-hot-loader": "^3.0.0-beta.6",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.19",
+    "babel-preset-stage-3": "^6.24.1",
+    "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
-    "eslint-plugin-react": "^7.7.0",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "html-webpack-inline-source-plugin": "0.0.10",
+    "eslint-plugin-react": "^7.9.1",
+    "file-loader": "^1.1.11",
+    "history": "^4.7.2",
     "html-webpack-plugin": "^3.2.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
     "react-hot-loader": "^4.0.0",
-    "redux-logger": "^3.0.6",
-    "webpack": "^4.3.0",
-    "webpack-cli": "^2.0.12",
-    "webpack-dev-server": "^3.1.1",
-    "write-file-webpack-plugin": "^4.2.0"
-  }
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux": "^4.0.0",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.3",
+    "webpack-dev-server": "^3.1.1"
+}
 ```
-# 目录结构
+# 目录结构<div id="mulu"></div>
 开发和发布版本的配置文件是分开的，多入口页面的目录结构。
 ```
 react-family/
@@ -107,7 +96,7 @@ cd react-family-bucket
 npm init
 ```
 如果有特殊需要，可以填入自己的配置，一路回车下来，会生成一个`package.json`，里面是你项目的基本信息，后面的npm依赖安装也会配置在这里。
-# webpack
+# webpack<div id="webpack"></div>
 1. 安装[webpack](https://webpack.js.org/)
 ```bash
 npm install webpack --save
@@ -174,7 +163,7 @@ mode: 'development'
 ```
 成功之后会在dev下面生成bundle.min.js代表正常。<br>
 如果想要动态监听文件变化需要在命令后面添加  `--watch`
-# react
+# react<div id="react"></div>
 1. 安装[react](https://reactjs.org/)
 ```bash
 npm install react react-dom --save
@@ -262,7 +251,7 @@ entry: [
     path.resolve(srcRoot,'./page/index/index.js')
 ],
 ```
-# 配置loader
+# 配置loader<div id="loader"></div>
 
 1. 处理样式文件需要这些loader:
 * [css-loader](https://github.com/webpack-contrib/css-loader)
@@ -297,7 +286,7 @@ npm install url-loader --save
 `limit:`表示超过多少就使用base64来代替，单位是byte<br>
 `name:`可以设置图片的路径，名称和是否使用hash 具体[参考这里](https://github.com/webpack-contrib/url-loader)
 
-# 引入babel
+# 引入babel<div id="babel"></div>
 
 [bebel](https://babeljs.io/)是用来解析es6语法或者是es7语法分解析器，让开发者能够使用新的es语法，同时支持jsx，vue等多种框架。
 1. 安装babel
@@ -373,7 +362,7 @@ npm install --save babel-plugin-transform-runtime
   ]
 }
 ```
-# 使用HtmlWebpackPlugin
+# 使用HtmlWebpackPlugin<div id="HtmlWebpackPlugin"></div>
 记得我们之前新建的index.html么 我们执行构建命令之后并没有将index.html打包到dev目录下 我们需要[HtmlWebpackPlugin](https://github.com/jantimon/html-webpack-plugin)来将我们output的js和html结合起来
 
 ```bash
@@ -394,7 +383,7 @@ plugins: [
 `template`:可以设置已哪个html文件为模版
 更多参数配置可以[参考这里](https://github.com/jantimon/html-webpack-plugin)
 
-# redux
+# redux<div id="redux"></div>
 
 关于[redux](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)的使用可以参考阮一峰老师的入门[教程](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
 
@@ -521,7 +510,7 @@ export const addTodo = (obj) => {
 };
 ```
 
-# 使用webpack-dev-server
+# 使用webpack-dev-server<div id="webpack-dev-server"></div>
 [webpack-dev-server](https://github.com/jantimon/webpack-dev-server)是一个小型的`Node.js Express`服务器,它使用webpack-dev-middleware来服务于webpack的包。
 1. 安装
 ```bash
@@ -551,7 +540,7 @@ devServer: {
 3. `devtool`功能：<br>
 具体来说添加了`devtool: 'inline-source-map'`之后，利用source-map你在chrome控制台看到的source源码都是真正的源码，未压缩，未编译前的代码，没有添加，你看到的代码是真实的压缩过，编译过的代码，更多devtool的配置可以[参考这里](https://webpack.docschina.org/configuration/devtool/)
 
-# 多入口文件配置
+# 多入口文件配置<div id="rukou"></div>
 在之前的配置中，都是基于单入口页面配置的，entry和output只有一个文件，但是实际项目很多情况下是多页面的，在配置多页面时，有2中方法可以选择：
 
 1. 在entry入口配置时，传入对象而不是单独数组,output时利用`[name]`关键字来区分输出文件例如：
@@ -595,7 +584,7 @@ function getEntry() {
 
 本demo采用的是第二中写法，能够更加灵活。
 
-# 如何理解`entry point(bundle)`,`chunk`,`module`
+# 如何理解`entry point(bundle)`,`chunk`,`module`<div id="entry"></div>
 
 在webpack中，如何理解`entry point(bundle)`,`chunk`,`module`?
 ![](https://oc5n93kni.qnssl.com/image/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-06-15%20%E4%B8%8B%E5%8D%889.06.45.png)
@@ -608,7 +597,7 @@ function getEntry() {
 * 正常情况下，一个`chunk`对应一个output,在使用了`CommonsChunkPlugin`或者`require.ensure`之后，`chunk`就变成了`initial chunk`,`normal chunk`，这时，一个`chunk`对应多个output。<br>
 理解这些概念对于后续使用webpack插件有很大的帮助。
 
-# 多入口页面html配置
+# 多入口页面html配置<div id="html"></div>
 
 之前我们配置`HtmlWebpackPlugin`时，同样采用的是但页面的配置，这里我们将进行多页面改造,`entryMap`是上一步得到的entry：
 ```javascript
@@ -638,7 +627,7 @@ plugins: [
      ...
 ].concat(htmlMap)
 ```
-# 模块热替换（Hot Module Replacement）
+# 模块热替换（Hot Module Replacement）<div id="hmr"></div>
 
 [模块热替换](https://webpack.docschina.org/guides/hot-module-replacement)(Hot Module Replacement 或 HMR)是 webpack 提供的最有用的功能之一。它允许在运行时更新各种模块，而无需进行完全刷新,很高大上有木有！
 
@@ -707,7 +696,7 @@ ReactDom.render(
 
 当控制台看到`[WDS] Hot Module Replacement enabled.`代表开启成功
 
-# 使用ESLint
+# 使用ESLint<div id="eslint"></div>
 [ESLint](https://eslint.org/) 是众多 Javascript Linter 中的其中一种，其他比较常见的还有 [JSLint](https://www.jslint.com/) 跟 [JSHint](http://jshint.com/)，之所以用 ESLint 是因为他可以自由选择要使用哪些规则，也有很多现成的 plugin 可以使用，另外他对 ES6 还有 JSX 的支持程度跟其他 linter 相比之下也是最高的。
 
 1. 安装ESLint
@@ -760,7 +749,7 @@ npm install eslint-plugin-react --save
 }
 ```
 
-# 使用react-router
+# 使用react-router<div id="react-router"></div>
 react-router强大指出在于方便代码管理，结合redux使用更加强大，同时支持web，native更多[参考这里](https://reacttraining.com/react-router/)
 1. 安装[react-router-dom](https://github.com/jantimon/react-router-dom)
 ```bash
@@ -872,7 +861,7 @@ const history = createMemoryHistory({
 });
 ```
 
-# 使用redux-thunk
+# 使用redux-thunk<div id="redux-thunk"></div>
 
 [redux-thunk](https://www.npmjs.com/package/redux-thunk) 是一个比较流行的 redux 异步 action 中间件，比如 action 中有 setTimeout 或者通过 fetch通用远程 API 这些场景，那么久应该使用 redux-thunk 了。redux-thunk 帮助你统一了异步和同步 action 的调用方式，把异步过程放在 action 级别解决，对 component 没有影响。
 
@@ -903,7 +892,7 @@ export const getData = (obj) => (dispatch, getState) => {
 };
 ```
 
-# 使用axios和async/await
+# 使用axios和async/await<div id="axios"></div>
 
 [axios](https://github.com/axios/axios) 是一个基于Promise 用于浏览器和 nodejs 的 HTTP 客户端：
 
@@ -996,7 +985,7 @@ export const getData = (obj) => async (dispatch, getState) => {
 };
 ```
 
-# Code Splitting
+# Code Splitting<div id="CodeSplitting"></div>
 1. 对于webpack1，2之前，你可以使用`require.ensure`来控制一个组件的懒加载：<br>
 ```javascript
 require.ensure([], _require => {
