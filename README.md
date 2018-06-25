@@ -341,6 +341,38 @@ babel支持自定义的预设(presets)或插件(plugins),只有配置了这两�
 ```bash
 npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
 ```
+
+2. [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill.html)是什么？
+我们之前使用的babel，babel-loader 默认只转换新的 JavaScript 语法，而不转换新的 API。例如，Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise 等全局对象，以及一些定义在全局对象上的方法（比如 Object.assign）都不会转译。如果想使用这些新的对象和方法，必须使用 babel-polyfill，为当前环境提供一个垫片。
+```bash
+npm install --save babel-polyfill
+```
+使用：
+```javascript
+import "babel-polyfill";
+```
+3. [transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)有什么区别？
+当使用`babel-polyfill`时有一些问题：<br>
+* 默认会引入所有babel支持的新语法，这样就会导致你的文件代码非常庞大。
+* 通过向全局对象和内置对象的prototype上添加方法来达成目的,造成全局变量污染。
+
+这时就需要`transform-runtime`来帮我们有选择性的引入
+```bash
+npm install --save babel-plugin-transform-runtime
+```
+配置文件：
+```javascript
+{
+  "plugins": [
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true,
+      "moduleName": "babel-runtime"
+    }]
+  ]
+}
+```
 # 使用HtmlWebpackPlugin
 记得我们之前新建的index.html么 我们执行构建命令之后并没有将index.html打包到dev目录下 我们需要[HtmlWebpackPlugin](https://github.com/jantimon/html-webpack-plugin)来将我们output的js和html结合起来
 
@@ -915,6 +947,51 @@ async function asyncCall() {
 
 asyncCall();
 ```
-async/await的用途是简化使用 promises 异步调用的操作，并对一组 Promises执行某些操作。正如Promises类似于结构化回调，async/await类似于组合生成器和 promises。<br>
+async/await的用途是简化使用 promises 异步调用的操作，并对一组 Promises执行某些操作。await前提是方法返回的是一个Promise对象，正如Promises类似于结构化回调，async/await类似于组合生成器和 promises。<br>
 
-1. async/await
+1. `async/await`需要安装[babel-plugin-transform-async-to-generator](https://www.npmjs.com/package/babel-plugin-transform-async-to-generator)。
+```bash
+npm install babel-plugin-transform-async-to-generator --save
+```
+
+2. 在`.babelrc`中增加配置：
+```javascript
+	"plugins": [
+		"transform-async-to-generator"
+	]
+```
+
+这样做仅仅是将async转换generator，如果你当前的浏览器不支持generator，你将会收到一个`Uncaught ReferenceError: regeneratorRuntime is not defined`的错误，你需要：
+3. 安装[babel-plugin-transform-runtime](https://www.npmjs.com/package/babel-plugin-transform-runtime):
+```bash
+npm install babel-plugin-transform-async-to-generator --save
+```
+
+4. 修改`.babelrc`中的配置(可以去掉之前配置的transform-async-to-generator)：
+```javascript
+	"plugins": [
+		"transform-runtime"
+	]
+```
+5. 如果不想引入所有的polyfill(参考上面对babel的解释),可以增加配置：
+```javascript
+	"plugins": [
+		"transform-runtime",
+			{
+				"polyfill": false,
+
+				"regenerator": true,
+			}
+	]
+```
+6. 结合axios使用：
+```javascript
+import axios from 'axios';
+export const getData = (obj) => async (dispatch, getState) => {
+    let resp = axios.get('/json/comments.json');
+	dispatch({
+		type: GET_DATA,
+		obj: resp
+	});
+};
+```
