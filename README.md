@@ -1,8 +1,8 @@
 # 目录
 
-1. [版本说明](#banben)
+1. [版本说明](#initcode)
 2. [目录结构](#banben)
-3. [初始化项目](#banben)
+3. [初始化项目](#initcode)
 4. [webpack](#banben)
 5. [react](#banben)
 6. [配置loader(sass,jsx)](#banben)
@@ -18,7 +18,7 @@
 16. [使用react-router](#banben)
 16. [使用redux-thunk](#banben)
 17. [使用axios和async/await](#banben)
-
+18. [Code Splitting](#banben)
 
 # 版本说明
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -96,19 +96,19 @@ react-family/
     |__.babelrc                                 * babel配置文件
 ```
 
-# 初始化项目
-1, 创建文件夹
+# 初始化项目<div id="initcode"></div>
+1. 创建文件夹
 ```bash
 mkdir react-family-bucket
 ```
-2, 初始化npm
+2. 初始化npm
 ```bash
 cd react-family-bucket
 npm init
 ```
 如果有特殊需要，可以填入自己的配置，一路回车下来，会生成一个`package.json`，里面是你项目的基本信息，后面的npm依赖安装也会配置在这里。
 # webpack
-1, 安装[webpack](https://webpack.js.org/)
+1. 安装[webpack](https://webpack.js.org/)
 ```bash
 npm install webpack --save
 or
@@ -117,7 +117,7 @@ npm install webpack --g
 `--save`是将当前webpack安装到react-family-bucket下的`/node_modules`。<br>
 `--g`是将当前webpack安装到全局下面，可以在node的安装目录下找到全局的`/node_modules`。
 
-2，配置webopack配置文件
+2. 配置webopack配置文件
 
 ```bash
 touch webpack.config.dev.js
@@ -342,7 +342,7 @@ babel支持自定义的预设(presets)或插件(plugins),只有配置了这两�
 npm install babel-preset-es2015 babel-preset-react babel-preset-stage-0 --save
 ```
 
-2. [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill.html)是什么？
+2. [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill.html)是什么？<br>
 我们之前使用的babel，babel-loader 默认只转换新的 JavaScript 语法，而不转换新的 API。例如，Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise 等全局对象，以及一些定义在全局对象上的方法（比如 Object.assign）都不会转译。如果想使用这些新的对象和方法，必须使用 babel-polyfill，为当前环境提供一个垫片。
 ```bash
 npm install --save babel-polyfill
@@ -351,7 +351,7 @@ npm install --save babel-polyfill
 ```javascript
 import "babel-polyfill";
 ```
-3. [transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)有什么区别？
+3. [transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)有什么区别？<br>
 当使用`babel-polyfill`时有一些问题：<br>
 * 默认会引入所有babel支持的新语法，这样就会导致你的文件代码非常庞大。
 * 通过向全局对象和内置对象的prototype上添加方法来达成目的,造成全局变量污染。
@@ -548,7 +548,7 @@ devServer: {
 
 * `webpack-dev-server`默认会开启livereload功能
 
-3. `devtool`功能：
+3. `devtool`功能：<br>
 具体来说添加了`devtool: 'inline-source-map'`之后，利用source-map你在chrome控制台看到的source源码都是真正的源码，未压缩，未编译前的代码，没有添加，你看到的代码是真实的压缩过，编译过的代码，更多devtool的配置可以[参考这里](https://webpack.docschina.org/configuration/devtool/)
 
 # 多入口文件配置
@@ -771,7 +771,7 @@ npm install react-router-dom --save
 npm install react-router-redux@next history --save
 ```
 
-3. 修改代码：
+3. 修改代码：<br>
 `index.js`:
 ```javascript
 import ReactDom from 'react-dom';
@@ -802,7 +802,7 @@ ReactDom.render(
 
 更多配置可以[参考这里](https://reacttraining.com/react-router/)
 
-4. 如果想要在代码逻辑中获取当前的route路径需要引入`router-reducer`:
+4. 如果想要在代码逻辑中获取当前的route路径需要引入`router-reducer`:<br>
 新建`main.js`:
 ```javascript
 import { combineReducers } from 'redux';
@@ -827,14 +827,14 @@ export default store;
 ```
 然后就可以在`this.props.router`里面获取单相关的路径信息
 4. 如果需要自己通过action来触发router的跳转，需要引入`routerMiddleware`:
-```
+```javascript
 import { createStore,applyMiddleware } from 'redux';
 import { routerMiddleware } from "react-router-redux";
 const middleware = routerMiddleware(history);
 const store = createStore(mainReducer,applyMiddleware(middleware));
 ```
 
-5. 使用`Route`和`Link`和`withRouter`:
+5. 使用`Route`和`Link`和`withRouter`:<br>
 先说说都是干嘛的：<br>
 * [Route](https://reacttraining.com/react-router/web/api/Route):component里面的内容即是tab的主要内容，这个从react-router4开始生效：
 ```javascript
@@ -929,7 +929,7 @@ export const getData = (obj) => (dispatch, getState) => {
 	});
 };
 ```
-[async/await](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function)：
+[async/await](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function)：<br>
 
 Javascript的回调地狱，相信很多人都知道，尤其是在node端，近些年比较流行的是[Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise)的解决方案，但是随着 Node 7 的发布，编程终级解决方案的 async/await应声而出。
 ```javascript
@@ -961,7 +961,7 @@ npm install babel-plugin-transform-async-to-generator --save
 	]
 ```
 
-这样做仅仅是将async转换generator，如果你当前的浏览器不支持generator，你将会收到一个`Uncaught ReferenceError: regeneratorRuntime is not defined`的错误，你需要：
+这样做仅仅是将async转换generator，如果你当前的浏览器不支持generator，你将会收到一个`Uncaught ReferenceError: regeneratorRuntime is not defined`的错误，你需要：<br>
 3. 安装[babel-plugin-transform-runtime](https://www.npmjs.com/package/babel-plugin-transform-runtime):
 ```bash
 npm install babel-plugin-transform-async-to-generator --save
@@ -995,3 +995,50 @@ export const getData = (obj) => async (dispatch, getState) => {
 	});
 };
 ```
+
+# Code Splitting
+1. 对于webpack1，2之前，你可以使用`require.ensure`来控制一个组件的懒加载：<br>
+```javascript
+require.ensure([], _require => {
+	let Component = _require('./Component.jsx');
+},'lazyname')
+```
+2. 在webpack4中，官方已经不再推荐使用`require.ensure`来使用懒加载功能*Dynamic Imports*，取而代之的是ES6的`import()`方法：
+```javascript
+import(
+  /* webpackChunkName: "my-chunk-name" */
+  /* webpackMode: "lazy" */
+  'module'
+);
+```
+不小小看注释里的代码，webpack在打包时会动态识别这里的代码来做相关的配置，例如chunk name等等。
+3. [Prefetching/Preloading modules](https://webpack.js.org/guides/code-splitting/#prefetching-preloading-modules):<br>
+
+webpack 4.6.0+支持了Prefetching/Preloading的写法:
+```javascript
+//...
+import(/* webpackPreload: true */ 'ChartingLibrary');
+```
+4. 结合React-Router使用:<br>
+
+[react-loadable](https://www.npmjs.com/package/react-loadable)对上述的功能做了封装，丰富了一些功能，结合`React-Router`起来使用更加方便。
+
+```bash
+npm install react-loadable --save
+```
+在react-router里使用：
+```javascript
+function Loading() {
+  return <div>Loading...</div>;
+}
+
+let Div2 = Loadable({
+  loader: () => import('./Div2'), 
+  loading: Loading,
+});
+
+<Route path="/2" component={Div2}></Route>
+```
+
+
+
