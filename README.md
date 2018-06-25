@@ -890,10 +890,31 @@ npm install axios --save
 import axios from 'axios';
 export const getData = (obj) => (dispatch, getState) => {
     axios.get('/json/comments.json').then((resp)=>{
-	     	dispatch({
-				type: GET_DATA,
-				obj: resp
-			});
+		dispatch({
+			type: GET_DATA,
+			obj: resp
+		});
 	});
 };
 ```
+[async/await](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function)：
+
+Javascript的回调地狱，相信很多人都知道，尤其是在node端，近些年比较流行的是[Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise)的解决方案，但是随着 Node 7 的发布，编程终级解决方案的 async/await应声而出。
+```javascript
+function resolveAfter2Seconds() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+
+async function asyncCall() {
+  var result = await resolveAfter2Seconds();
+}
+
+asyncCall();
+```
+async/await的用途是简化使用 promises 异步调用的操作，并对一组 Promises执行某些操作。正如Promises类似于结构化回调，async/await类似于组合生成器和 promises。<br>
+
+1. async/await
