@@ -11,14 +11,14 @@
 9. [redux](#redux)
 10. [使用webpack-dev-server](#使用webpack-dev-server)
 11. [多入口页面配置](#多入口页面配置)
-12. [如何理解`entry point(bundle)`,`chunk`,`module`](#如何理解`entry point(bundle)`,`chunk`,`module`)
+12. [如何理解`entry point(bundle)`,`chunk`,`module`](#entry)
 13. [多入口页面html配置](#多入口页面html配置)
-14. [模块热替换（Hot Module Replacement）](#模块热替换（Hot Module Replacement）)
+14. [模块热替换（Hot Module Replacement）](#hmr)
 15. [使用ESLint](#使用ESLint)
 16. [使用react-router](#使用react-router)
 16. [使用redux-thunk](#使用redux-thunk)
 17. [使用axios和async/await](#使用axios和async/await)
-18. [Code Splitting](#Code Splitting)
+18. [Code Splitting](#CodeSplitting)
 
 # 版本说明<div id="banben"></div>
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
