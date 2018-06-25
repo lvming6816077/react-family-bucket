@@ -1,8 +1,8 @@
 # 目录
 
-1. [版本说明](#banben)
-2. [目录结构](#mulu)
-3. [初始化项目](#initcode)
+1. [版本说明](#版本说明)
+2. [目录结构](#目录结构)
+3. [初始化项目](#初始化项目)
 4. [webpack](#webpack)
 5. [react](#react)
 6. [配置loader(sass,jsx)](#loader)
