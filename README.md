@@ -19,6 +19,8 @@
 16. [使用redux-thunk](#使用redux-thunk)
 17. [使用axios和async/await](#使用axios和async/await)
 18. [Code Splitting](#CodeSplitting)
+19. [使用CommonsChunkPlugin](#使用CommonsChunkPlugin)
+
 
 # 版本说明<div id="banben"></div>
 由于构建相关例如webpack，babel等更新的较快，所以本教程以下面各种模块的版本号为主，切勿轻易修改或更新版本。
@@ -1028,6 +1030,53 @@ let Div2 = Loadable({
 
 <Route path="/2" component={Div2}></Route>
 ```
+
+
+# 使用CommonsChunkPlugin
+
+`CommonsChunkPlugin` 插件，是一个可选的用于建立一个独立文件(又称作 chunk)的功能，这个文件包括多个入口 chunk 的公共模块。通过将公共模块拆出来，最终合成的文件能够在最开始的时候加载一次，便存起来到缓存中供后续使用。<br>
+
+1. 在webpack4之前的用法：
+```javascript
+new webpack.optimize.CommonsChunkPlugin({
+    name: 'common',
+    chunks: ['page1','page2'],
+    minChunks: 3
+})
+```
+* `name`: string: 提出出的名称
+* `chunks`: string[]: webpack会从传入的chunk里面提取公共代码,默认从所有entry里提取
+* `minChunks`: number|infinity|function(module,count)->boolean: 如果传入数字或infinity(默认值为3)，就是告诉webpack，只有当模块重复的次数大于等于该数字时，这个模块才会被提取出来。当传入为函数时，所有符合条件的chunk中的模块都会被传入该函数做计算，返回true的模块会被提取到目标chunk。
+更多的参数配置，可以[参考这里](https://webpack.js.org/plugins/commons-chunk-plugin/#src/components/Sidebar/Sidebar.jsx)
+2. 在webpack4之后的用法：
+```javascript
+module.exports = {
+  //...
+  optimization: {
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  }
+};
+```
+
 
 
 
