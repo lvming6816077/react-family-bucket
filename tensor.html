@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>手写字体识别</title>
+    <style type="text/css">
+    *{ margin:0; padding:0;}
+    body{ background: #fff; padding: 20px; }
+    h1 {
+        text-align: center;
+    }
+    #canvas {
+        margin: 0 auto;
+        display: block;
+        position: absolute;
+        left: 400px;
+        top: 200px;
+        background-color: #fff;
+        border: 1px solid;
+    }
+    #canvas::before {
+        content: '手写区：';
+        display: block;
+    }
+    #canvasSmall {
+        background-color: #fff;
+    }
+    #canvasImg {
+        position: absolute;
+        top: 220px;
+        left: 800px;
+        display: block;
+        border: 1px solid #ccc;
+        -webkit-transform: scale(2.4);
+    }
+    .text1 {
+        position: absolute;
+        left: 400px;
+        top: 123px;
+    }
+    .text2 {
+        position: absolute;
+        left: 800px;
+        top: 123px;
+    }
+    .text3 {
+        position: absolute;
+        left: 1100px;
+        top: 123px;
+    }
+    .opera {
+        position: absolute;
+        top: 576px;
+        left: 456px;
+    }
+    .opera button {
+        width: 100px;
+        height: 50px;
+    }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.9.0"> </script>
+
+</head>
+<body>
+
+    <h1>调度字体</h1>
+    <p class="text1">手写区：</p>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    
+    <p class="text2">预览区：</p>
+    <img id="canvasImg" style="width:28px;height:28px;" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="/>
+
+    <div class="opera">
+        <button id="translate">预测</button>
+        <button id="clear">清除</button>
+    </div>
+    <p class="text3">结果区：</p>
+    <div style="color: red;
+    position: absolute;
+    left: 1200px;
+    top: 200px;
+    font-size: 21px;" id="myw"></div>
+    <script>
+        async function  loadModel(){
+            window.pmodel = await tf.loadModel('./model/model.json');
+        }
+
+        loadModel();
+        
+    </script>
+    <script>
+        var ctx;
+        var x;
+        var y;
+        var a;
+        var dragFlag = false;
+
+        function circle(x,y) {
+            ctx.beginPath();  
+            ctx.arc(x, y, 9, 0, Math.PI*2, true);  
+            ctx.closePath();
+            ctx.fillStyle = "#000000";
+            ctx.fill();  
+        }
+
+        function init() {  
+            var canvas = document.getElementById("canvas");
+
+            ctx = canvas.getContext("2d");
+            document.getElementById("translate").addEventListener("click",translate);
+            document.getElementById("clear").addEventListener("click",clear);
+            canvas.addEventListener("mousemove",mouseMove);  
+            canvas.addEventListener("mousedown",mousedown);  
+            canvas.addEventListener("mouseup",mouseup);  
+            ctx.fillStyle = '#ffffff';
+
+            ctx.fillRect(0,0,300,300);
+        }
+        function clear(){
+        
+            ctx.fillStyle = '#ffffff';
+
+            
+            document.getElementById("myw").innerHTML = '';
+            ctx.fillRect(0,0,300,300);
+            document.getElementById("canvasImg").src = 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==';
+        }
+        function translate(e){
+            
+            // var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            // let row = 0;
+            // let column = 0;
+            // let pixels = [[]];
+            // const data = imageData.data;
+            
+            // var a2 = document.getElementById("a2").getContext('2d');
+            // a2.drawImage(ctx.canvas, 0, 0, 28, 28);
+
+            
+            // var f = a2.getImageData(0, 0, 28, 28);
+            
+            let img = tf.fromPixels(document.getElementById("canvasImg"), 1);
+            img = img.reshape([1,28, 28, 1]);
+            img = tf.cast(img, 'float32');
+            let g = window.pmodel.predict(img);
+            var b = g.argMax(1);
+            console.log(g.dataSync());
+            document.getElementById('myw').innerText = b.dataSync()[0];
+            
+        }
+
+        function mousedown(){
+            dragFlag = true;
+            
+        }
+        function mouseup(){
+            dragFlag = false;
+            document.getElementById("canvasImg").src = ctx.canvas.toDataURL();
+        }
+        function mouseMove (e){
+            var rect = e.currentTarget.getBoundingClientRect();  
+            var gravityPoint = {  
+                    x: e.clientX - rect.left,  
+                    y: e.clientY - rect.top  
+                };
+            x = gravityPoint.x;
+            y = gravityPoint.y;
+            if (dragFlag) {
+                circle(x,y);
+            }
+        }
+        init();
+    </script>
+</body>
+</html>
