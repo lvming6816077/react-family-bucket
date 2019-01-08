@@ -49,3 +49,8 @@
 2. css伪类使用技巧。
 3. 移动端局部滚动。
 4. jquer操作dom实现购物车联动。
+
+
+
+http://4.qdemo.sinaapp.com/canvas-image/#20
+
